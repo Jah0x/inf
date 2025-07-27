@@ -1,0 +1,37 @@
+{
+  // Example Xray configuration used by Marzban.
+  // This file defines a single VLESS inbound on port 443 using TLS.  In
+  // production deployments you should customise the ports, protocols and
+  // certificates according to your needs.  See Marzban's documentation for
+  // advanced configuration options【46485567583785†L373-L379】.
+  "log": {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 443,
+      "protocol": "vless",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "certificates": [
+            {
+              "certificateFile": "/etc/xray/cert.pem",
+              "keyFile": "/etc/xray/key.pem"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    { "protocol": "freedom" },
+    { "protocol": "blackhole", "tag": "blocked" }
+  ]
+}
