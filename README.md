@@ -125,7 +125,16 @@ kubectl create secret generic vpn-infra-env \
 
 ## Шаг 5. Применение манифестов
 
-Примените конфигурации:
+
+Примените конфигурации вручную, как показано ниже, или воспользуйтесь
+автоматическим скриптом `scripts/deploy.sh`, который выполнит эти
+действия за вас:
+
+```bash
+bash scripts/deploy.sh
+```
+
+Если предпочитаете выполнять команды вручную:
 
 ```bash
 kubectl apply -f manifests/namespace.yaml
