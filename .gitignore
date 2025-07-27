@@ -1,0 +1,17 @@
+# Ignore environment files and secrets
+.env
+.env.*
+
+# Ignore node modules, build outputs and logs
+node_modules/
+dist/
+logs/
+
+# Ignore editor / OS files
+.DS_Store
+*.swp
+*.swo
+
+# Ignore kubectl/kubeadm generated files
+kubeadm-config.yaml
+*~
