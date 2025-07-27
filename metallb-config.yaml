@@ -1,0 +1,24 @@
+# Optional MetalLB configuration
+#
+# If you are running Kubernetes on bare metal, you can use MetalLB to provide
+# external IP addresses for services of type LoadBalancer.  Adjust the
+# addresses below to match the IPs allocated for your cluster.
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: vpn-infra-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    # Replace with the range of IPs that MetalLB is allowed to allocate.
+    - 203.0.113.11-203.0.113.11
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: vpn-infra-l2adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - vpn-infra-pool

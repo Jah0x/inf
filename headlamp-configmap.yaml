@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headlamp-config
+  namespace: vpn-infra
+data:
+  HEADLAMP_CONFIG_TRACING_ENABLED: "true"
+  HEADLAMP_CONFIG_METRICS_ENABLED: "true"
+  HEADLAMP_CONFIG_OTLP_ENDPOINT: "otel-collector:4317"
+  HEADLAMP_CONFIG_SERVICE_NAME: "headlamp"
+  HEADLAMP_CONFIG_SERVICE_VERSION: "latest"

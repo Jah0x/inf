@@ -1,0 +1,37 @@
+# Example NetworkPolicies to improve cluster security
+
+## Deny all ingress/egress by default
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: vpn-infra
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+## Allow ingress to PostgreSQL only from backend and admin panels
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-allow-from-backend
+  namespace: vpn-infra
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: vpn-backend
+        - podSelector:
+            matchLabels:
+              app: marzban
+      ports:
+        - protocol: TCP
+          port: 5432
+  policyTypes:
+    - Ingress

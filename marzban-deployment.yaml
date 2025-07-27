@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: marzban
+  namespace: vpn-infra
+  labels:
+    app: marzban
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http
+  selector:
+    app: marzban
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marzban
+  namespace: vpn-infra
+  labels:
+    app: marzban
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: marzban
+  template:
+    metadata:
+      labels:
+        app: marzban
+    spec:
+      # Schedule Marzban on nodes labelled with vpn-infra-role=infra
+      nodeSelector:
+        vpn-infra-role: infra
+      containers:
+        - name: marzban
+          image: gozargah/marzban:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            # Use the shared secret containing environment variables.  See README
+            # for instructions on creating this secret from `.env`.
+            - secretRef:
+                name: vpn-infra-env
+          ports:
+            - containerPort: 8000
+              name: http
+          volumeMounts:
+            - name: xray-config
+              mountPath: /config/xray_config.json
+              subPath: xray_config.json
+            - name: marzban-data
+              mountPath: /var/lib/marzban
+      volumes:
+        - name: xray-config
+          configMap:
+            name: xray-config
+        - name: marzban-data
+          persistentVolumeClaim:
+            claimName: marzban-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: marzban-data
+  namespace: vpn-infra
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

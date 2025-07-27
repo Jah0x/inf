@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: headlamp
+  namespace: vpn-infra
+  labels:
+    app: headlamp
+spec:
+  ports:
+    - port: 80
+      targetPort: 4466
+      name: http
+  selector:
+    app: headlamp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headlamp
+  namespace: vpn-infra
+  labels:
+    app: headlamp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headlamp
+  template:
+    metadata:
+      labels:
+        app: headlamp
+    spec:
+      nodeSelector:
+        vpn-infra-role: infra
+      containers:
+        - name: headlamp
+          image: jah0x/headlamp:latest
+          args:
+            - "-in-cluster"
+          env:
+            - name: HEADLAMP_CONFIG_TRACING_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: headlamp-config
+                  key: HEADLAMP_CONFIG_TRACING_ENABLED
+            - name: HEADLAMP_CONFIG_METRICS_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: headlamp-config
+                  key: HEADLAMP_CONFIG_METRICS_ENABLED
+            - name: HEADLAMP_CONFIG_OTLP_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: headlamp-config
+                  key: HEADLAMP_CONFIG_OTLP_ENDPOINT
+            - name: HEADLAMP_CONFIG_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: headlamp-config
+                  key: HEADLAMP_CONFIG_SERVICE_NAME
+            - name: HEADLAMP_CONFIG_SERVICE_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: headlamp-config
+                  key: HEADLAMP_CONFIG_SERVICE_VERSION
+          ports:
+            - containerPort: 4466
+              name: http
+            - containerPort: 9090
+              name: metrics

@@ -1,0 +1,37 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+  namespace: cert-manager
+spec:
+  acme:
+    # Replace this email with your own email address for Let's Encrypt registration
+    email: admin@example.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-production
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vpn-infra-cert
+  namespace: vpn-infra
+spec:
+  # The secret that stores your TLS key and certificate.  This secret is
+  # referenced in the Ingress definition.
+  secretName: vpn-infra-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: example.com
+  dnsNames:
+    - headlamp.example.com
+    - marzban.example.com
+    - api.example.com
+    - example.com
+    - sub.example.com
+    - grafana.example.com

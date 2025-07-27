@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vpn-frontend
+  namespace: vpn-infra
+  labels:
+    app: vpn-frontend
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: vpn-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpn-frontend
+  namespace: vpn-infra
+  labels:
+    app: vpn-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vpn-frontend
+  template:
+    metadata:
+      labels:
+        app: vpn-frontend
+    spec:
+      nodeSelector:
+        vpn-infra-role: infra
+      containers:
+        - name: vpn-frontend
+          # Replace with the image built from the vpn_project frontend (e.g. Nginx serving the compiled assets)
+          image: your-registry/vpn-frontend:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: vpn-infra-env
+          ports:
+            - containerPort: 80
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5

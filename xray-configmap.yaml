@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xray-config
+  namespace: vpn-infra
+data:
+  xray_config.json: |
+    {
+      "log": {
+        "access": "/var/log/xray/access.log",
+        "error": "/var/log/xray/error.log",
+        "loglevel": "warning"
+      },
+      "inbounds": [
+        {
+          "port": 443,
+          "protocol": "vless",
+          "settings": {
+            "clients": []
+          },
+          "streamSettings": {
+            "network": "tcp",
+            "security": "tls",
+            "tlsSettings": {
+              "certificates": [
+                {
+                  "certificateFile": "/etc/xray/cert.pem",
+                  "keyFile": "/etc/xray/key.pem"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "outbounds": [
+        { "protocol": "freedom" },
+        { "protocol": "blackhole", "tag": "blocked" }
+      ]
+    }

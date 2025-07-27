@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+  namespace: vpn-infra
+  labels:
+    app: postgres
+data:
+  # This SQL file is executed automatically by the official PostgreSQL image
+  # during the first start‑up.  See `config_templates/init.sql` for details.
+  init.sql: |
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
