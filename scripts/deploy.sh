@@ -34,10 +34,6 @@ MANIFESTS=(
   marzban-deployment.yaml
   headlamp-configmap.yaml
   headlamp-deployment.yaml
-  vpn-backend-deployment.yaml
-  vpn-frontend-deployment.yaml
-  subscription-configmap.yaml
-  subscription-deployment.yaml
   grafana-deployment.yaml
   network-policy.yaml
 )
