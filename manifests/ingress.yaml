@@ -14,9 +14,6 @@ spec:
       hosts:
         - ${HEADLAMP_SUBDOMAIN}
         - ${MARZBAN_SUBDOMAIN}
-        - ${VPN_API_SUBDOMAIN}
-        - ${VPN_FRONTEND_SUBDOMAIN}
-        - ${SUBSCRIPTION_SUBDOMAIN}
         - ${GRAFANA_SUBDOMAIN}
   rules:
     - host: ${HEADLAMP_SUBDOMAIN}
@@ -39,36 +36,6 @@ spec:
                 name: marzban
                 port:
                   number: 8000
-    - host: ${VPN_FRONTEND_SUBDOMAIN}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: vpn-frontend
-                port:
-                  number: 80
-    - host: ${VPN_API_SUBDOMAIN}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: vpn-backend
-                port:
-                  number: 8080
-    - host: ${SUBSCRIPTION_SUBDOMAIN}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: subscription
-                port:
-                  number: 80
     - host: ${GRAFANA_SUBDOMAIN}
       http:
         paths:
